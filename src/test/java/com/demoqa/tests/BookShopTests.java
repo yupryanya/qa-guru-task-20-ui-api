@@ -1,6 +1,7 @@
 package com.demoqa.tests;
 
 import com.demoqa.helpers.WithLogin;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -8,6 +9,7 @@ import static io.qameta.allure.Allure.step;
 
 public class BookShopTests extends TestBase {
     @ParameterizedTest(name = "Delete one book from user collection")
+    @Tag("regression")
     @WithLogin
     @ValueSource(strings = {
             "9781491904244"
