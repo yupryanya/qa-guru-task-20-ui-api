@@ -1,6 +1,6 @@
 package com.demoqa.helpers;
 
-import com.demoqa.api.account.AccountApi;
+import com.demoqa.api.AccountApi;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.Cookie;

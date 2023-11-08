@@ -1,6 +1,8 @@
-package com.demoqa.api.account;
+package com.demoqa.api;
 
 import com.demoqa.config.App;
+import com.demoqa.models.account.AuthorisationRequestModel;
+import com.demoqa.models.account.AuthorisationResponseModel;
 
 import static com.demoqa.specs.AccountSpec.requestSpec;
 import static com.demoqa.specs.AccountSpec.responseWithStatusCode200Spec;

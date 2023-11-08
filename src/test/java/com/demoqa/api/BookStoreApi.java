@@ -1,6 +1,8 @@
-package com.demoqa.api.bookStore;
+package com.demoqa.api;
 
-import com.demoqa.api.account.AccountApi;
+import com.demoqa.models.bookStore.AddBookRequestModel;
+import com.demoqa.models.bookStore.AddBookResponseModel;
+import com.demoqa.models.bookStore.BookDataResponseModel;
 
 import java.util.List;
 

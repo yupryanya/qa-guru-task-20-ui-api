@@ -1,6 +1,6 @@
 package com.demoqa.tests;
 
-import com.demoqa.api.bookStore.BookStoreApi;
+import com.demoqa.api.BookStoreApi;
 import com.demoqa.config.App;
 import com.demoqa.helpers.WebDriverProvider;
 import com.demoqa.helpers.Attach;

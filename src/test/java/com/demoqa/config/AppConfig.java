@@ -31,7 +31,8 @@ public interface AppConfig extends Config {
     @DefaultValue("false" )
     boolean isRemote();
 
-    @Key("remoteUrl" )
+    @Key("remoteUrl")
+    @DefaultValue("selenoid.autotests.cloud")
     String remoteUrl();
 
     @Key("username" )

@@ -1,6 +1,6 @@
 package com.demoqa.specs;
 
-import com.demoqa.api.account.AccountApi;
+import com.demoqa.api.AccountApi;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;

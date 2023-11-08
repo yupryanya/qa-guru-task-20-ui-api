@@ -1,4 +1,4 @@
-package com.demoqa.api.bookStore;
+package com.demoqa.models.bookStore;
 
 import lombok.Data;
 
