@@ -6,14 +6,28 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'TASK', choices: ['test', 'regression', 'smoke'], description: 'Select the task to run')
-        choice(name: 'BROWSER', choices: ['chrome', 'firefox'], description: 'Select the browser for testing')
-        choice(name: 'BROWSER_VERSION', choices: ['100', '99', '98'], description: 'Select the browser version')
-        choice(name: 'RESOLUTION', choices: ['1920x1080', '1280x720'], description: 'Select the screen resolution')
-        choice(name: 'API_URL', choices: ['https://demoqa.com'], description: 'Enter the API URL')
-        choice(name: 'WEB_URL', choices: ['https://demoqa.com'], description: 'Enter the web URL')
-        string(name: 'COMMENT', defaultValue: '', description: 'Enter a comment for the report (optional)')
-        credentials(name: 'TELEGRAM_BOT_TOKEN',
+        choice(name: 'TASK',
+                        choices: ['test', 'regression', 'smoke'],
+                        description: 'Select the task to run')
+        choice(name: 'BROWSER',
+                        choices: ['chrome', 'firefox'],
+                        description: 'Select the browser for testing')
+        choice(name: 'BROWSER_VERSION',
+                        choices: ['100', '99', '98'],
+                        description: 'Select the browser version')
+        choice(name: 'RESOLUTION',
+                        choices: ['1920x1080', '1280x720'],
+                        description: 'Select the screen resolution')
+        choice(name: 'API_URL',
+                        choices: ['https://demoqa.com'],
+                        description: 'Enter the API URL')
+        choice(name: 'WEB_URL',
+                        choices: ['https://demoqa.com'],
+                        description: 'Enter the web URL')
+        string(name: 'COMMENT',
+                        defaultValue: '',
+                        description: 'Enter a comment for the report')
+        credentials(name: 'TELEGRAM_TOKEN',
                         description: 'Telegram bot token for sending notifications in telegram chat',
                         defaultValue: '021-azovceva-telegram-token',
                         credentialType: "jenkins_secret_text_credentials",
@@ -48,6 +62,7 @@ pipeline {
         always {
             allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
             script {
+               withCredentials([string(credentialsId: 'TELEGRAM_TOKEN', variable: 'TELEGRAM_TOKEN')]) {
                  writeFile file: 'notifications/config.json', text: """
                                     {
                                       "base": {
@@ -61,12 +76,13 @@ pipeline {
                                         "enableChart": true
                                       },
                                       "telegram": {
-                                        "token": "${TELEGRAM_BOT_TOKEN}",
+                                        "token": "${TELEGRAM_TOKEN}",
                                         "chat": "-1001755259300",
                                         "replyTo": ""
                                       }
                                     }
                                     """
+                 }
                 sh 'java -DconfigFile=notifications/config.json -jar ../allure-notifications-4.3.0.jar'
             }
         }
