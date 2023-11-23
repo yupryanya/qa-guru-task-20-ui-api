@@ -58,7 +58,7 @@ pipeline {
                  sh """
                                          java -Dbase.logo="" \
                                               -Dbase.project="${JOB_NAME}" \
-                                              -Dbase.environment="${WEB_URL}" \
+                                              -Dbase.environment=${WEB_URL} \
                                               -Dbase.comment="${COMMENT}" \
                                               -Dbase.reportLink="${BUILD_URL}" \
                                               -Dbase.language="en" \
