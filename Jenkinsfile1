@@ -1,6 +1,3 @@
-def allureFile = '../allure-notifications-4.3.0.jar'
-def allureNotificationsUrl = 'https://github.com/qa-guru/allure-notifications/releases/download/4.3.0/allure-notifications-4.3.0.jar'
-
 pipeline {
     agent any
 
