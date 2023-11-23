@@ -76,14 +76,14 @@ pipeline {
                                         "enableChart": true
                                       },
                                       "telegram": {
-                                        "token": "${TELEGRAM_TOKEN}",
+
                                         "chat": "-1001755259300",
                                         "replyTo": ""
                                       }
                                     }
                                     """
                  }
-                sh 'java -DconfigFile=notifications/config.json -jar ../allure-notifications-4.3.0.jar'
+                sh 'java -DconfigFile=notifications/config.json -Dtelegram.token=${TELEGRAM_TOKEN} -jar ../allure-notifications-4.3.0.jar'
             }
         }
     }
