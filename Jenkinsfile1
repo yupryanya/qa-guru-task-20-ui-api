@@ -45,39 +45,39 @@ pipeline {
         stage('Test') {
             steps {
                 withAllureUpload(name: '${JOB_NAME} - #${BUILD_NUMBER}', projectId: '3838', results: [[path: 'build/allure-results']], serverId: 'allure-server', tags: 'nightly') {
-                    sh '''
-                         gradle clean ${TASK} \
-                                      -DisRemote=true \
-                                      -Dbrowser=${BROWSER} \
-                                      -DbrowserVersion=${BROWSER_VERSION} \
-                                      -DbrowserSize=${RESOLUTION} \
-                                      -DwebUrl=${WEB_URL} \
-                                      -DapiUrl=${API_URL}
-                    '''
+                    sh 'gradle clean ${TASK} -DisRemote=true -Dbrowser=${BROWSER} -DbrowserVersion=${BROWSER_VERSION} -DbrowserSize=${RESOLUTION} -DwebUrl=${WEB_URL} -DapiUrl=${API_URL}'
                 }
             }
         }
     }
     post {
         always {
-                    allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
-                    withCredentials([string(credentialsId: '${TELEGRAM_TOKEN}', variable: 'TELEGRAM_TOKEN')]) {
-                             sh "if [ ! -f '${allureFile}' ]; then wget -O '${allureFile}' '${allureNotificationsUrl} -P ..'; fi"
-                             sh '''
-                                  java -Dbase.logo="" \
-                                       -Dbase.project=${JOB_NAME} \
-                                       -Dbase.environment=${WEB_URL} \
-                                       -Dbase.comment=${COMMENT} \
-                                       -Dbase.reportLink=${BUILD_URL} \
-                                       -Dbase.language="en" \
-                                       -Dbase.allureFolder="allure-report" \
-                                       -Dbase.enableChart=true \
-                                       -Dtelegram.token=${TELEGRAM_TOKEN} \
-                                       -Dtelegram.chat="-1001755259300" \
-                                       -Dtelegram.replyTo="" \
-                                       -jar ../allure-notifications-4.3.0.jar
-                             '''
-                    }
-                }
+            allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
+            script {
+               withCredentials([string(credentialsId: 'TELEGRAM_TOKEN', variable: 'TELEGRAM_TOKEN')]) {
+                 sh "if [ ! -f '${allureFile}' ]; then wget -O '${allureFile}' '${allureNotificationsUrl} -P ..'; fi"
+                 writeFile file: 'notifications/config.json', text: """
+                                    {
+                                      "base": {
+                                        "logo": "",
+                                        "project": "${JOB_NAME}",
+                                        "environment": "${WEB_URL}",
+                                        "comment": "${COMMENT}",
+                                        "reportLink": "${BUILD_URL}",
+                                        "language": "en",
+                                        "allureFolder": "allure-report",
+                                        "enableChart": true
+                                      },
+                                      "telegram": {
+                                        "token": "${TELEGRAM_TOKEN}",
+                                        "chat": "-1001755259300",
+                                        "replyTo": ""
+                                      }
+                                    }
+                                    """
+                 }
+                sh 'java -DconfigFile=notifications/config.json -jar ../allure-notifications-4.3.0.jar'
+            }
+        }
     }
 }

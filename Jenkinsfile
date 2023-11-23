@@ -1,3 +1,6 @@
+def allureFile = '../allure-notifications-4.3.0.jar'
+def allureNotificationsUrl = 'https://github.com/qa-guru/allure-notifications/releases/download/4.3.0/allure-notifications-4.3.0.jar'
+
 pipeline {
     agent any
 
@@ -62,7 +65,8 @@ pipeline {
         always {
             allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
             script {
-
+               withCredentials([string(credentialsId: 'TELEGRAM_TOKEN', variable: 'TELEGRAM_TOKEN')]) {
+                 sh "if [ ! -f '${allureFile}' ]; then wget -O '${allureFile}' '${allureNotificationsUrl} -P ..'; fi"
                  writeFile file: 'notifications/config.json', text: """
                                     {
                                       "base": {
@@ -76,15 +80,14 @@ pipeline {
                                         "enableChart": true
                                       },
                                       "telegram": {
-
+                                        "token": "${TELEGRAM_TOKEN}",
                                         "chat": "-1001755259300",
                                         "replyTo": ""
                                       }
                                     }
                                     """
-                withCredentials([string(credentialsId: 'TELEGRAM_TOKEN', variable: 'TELEGRAM_TOKEN')]) {
-                   sh 'java -DconfigFile=notifications/config.json -Dtelegram.token=${TELEGRAM_TOKEN} -jar ../allure-notifications-4.3.0.jar'
-                }
+                 }
+                sh 'java -DconfigFile=notifications/config.json -jar ../allure-notifications-4.3.0.jar'
             }
         }
     }
