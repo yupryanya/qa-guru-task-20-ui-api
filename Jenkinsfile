@@ -62,7 +62,7 @@ pipeline {
         always {
             allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
             script {
-               withCredentials([string(credentialsId: 'TELEGRAM_TOKEN', variable: 'TELEGRAM_TOKEN')]) {
+
                  writeFile file: 'notifications/config.json', text: """
                                     {
                                       "base": {
@@ -82,8 +82,9 @@ pipeline {
                                       }
                                     }
                                     """
-                 }
-                sh 'java -DconfigFile=notifications/config.json -Dtelegram.token=${TELEGRAM_TOKEN} -jar ../allure-notifications-4.3.0.jar'
+                withCredentials([string(credentialsId: 'TELEGRAM_TOKEN', variable: 'TELEGRAM_TOKEN')]) {
+                   sh 'java -DconfigFile=notifications/config.json -Dtelegram.token=${TELEGRAM_TOKEN} -jar ../allure-notifications-4.3.0.jar'
+                }
             }
         }
     }
