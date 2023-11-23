@@ -29,8 +29,10 @@ pipeline {
         stage('Prepare Post-Build') {
             steps {
                 script {
+                    // Check if the allure-notifications-4.3.0.jar file exists
                     def jarFile = '../allure-notifications-4.3.0.jar'
-                    if (!fileExists(jarFile)) {
+                    if (!fileExists(file: jarFile)) {
+                        // Download the allure-notifications-4.3.0.jar file
                         sh 'wget https://github.com/qa-guru/allure-notifications/releases/download/4.3.0/allure-notifications-4.3.0.jar -P ..'
                     }
                 }
@@ -44,6 +46,7 @@ pipeline {
         }
         success {
             script {
+                // Create notifications/config.json file
                 writeFile file: 'notifications/config.json', text: '''
                 {
                   "base": {
@@ -63,13 +66,9 @@ pipeline {
                   }
                 }
                 '''
+                // Run post-build script
                 sh 'java -DconfigFile=notifications/config.json -jar ../allure-notifications-4.3.0.jar'
             }
         }
     }
-}
-
-def fileExists(filePath) {
-    def file = new File(filePath)
-    return file.exists()
 }
