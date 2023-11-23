@@ -57,14 +57,14 @@ pipeline {
                  sh "if [ ! -f '${allureFile}' ]; then wget -O '${allureFile}' '${allureNotificationsUrl} -P ..'; fi"
                  sh """
                                          java -Dbase.logo="" \
-                                              -Dbase.project="${JOB_NAME}" \
+                                              -Dbase.project=${JOB_NAME} \
                                               -Dbase.environment=${WEB_URL} \
-                                              -Dbase.comment="${COMMENT}" \
-                                              -Dbase.reportLink="${BUILD_URL}" \
+                                              -Dbase.comment=${COMMENT} \
+                                              -Dbase.reportLink=${BUILD_URL} \
                                               -Dbase.language="en" \
                                               -Dbase.allureFolder="allure-report" \
                                               -Dbase.enableChart=true \
-                                              -Dtelegram.token="${TELEGRAM_TOKEN}" \
+                                              -Dtelegram.token=${TELEGRAM_TOKEN} \
                                               -Dtelegram.chat="-1001755259300" \
                                               -Dtelegram.replyTo="" \
                                               -DconfigFile=notifications/config.json \
