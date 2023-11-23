@@ -1,3 +1,6 @@
+def allureFile = '../allure-notifications-4.3.0.jar'
+def allureNotificationsUrl = 'https://github.com/qa-guru/allure-notifications/releases/download/4.3.0/allure-notifications-4.3.0.jar'
+
 pipeline {
     agent any
 
@@ -51,9 +54,6 @@ pipeline {
         always {
                     allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
                     withCredentials([string(credentialsId: '${TELEGRAM_TOKEN}', variable: 'TELEGRAM_TOKEN')]) {
-                             def allureFile = '../allure-notifications-4.3.0.jar'
-                             def allureNotificationsUrl = 'https://github.com/qa-guru/allure-notifications/releases/download/4.3.0/allure-notifications-4.3.0.jar'
-
                              sh "if [ ! -f '${allureFile}' ]; then wget -O '${allureFile}' '${allureNotificationsUrl} -P ..'; fi"
                              sh '''
                                   java -Dbase.logo="" \
