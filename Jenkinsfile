@@ -13,8 +13,12 @@ pipeline {
         choice(name: 'API_URL', choices: ['https://demoqa.com'], description: 'Enter the API URL')
         choice(name: 'WEB_URL', choices: ['https://demoqa.com'], description: 'Enter the web URL')
         string(name: 'COMMENT', defaultValue: '', description: 'Enter a comment for the report (optional)')
+        credentials(name: 'TELEGRAM_BOT_TOKEN',
+                        description: 'Telegram bot token for sending notifications in telegram chat',
+                        defaultValue: '021-azovceva-telegram-token',
+                        credentialType: "jenkins_secret_text_credentials",
+                        required: true)
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -57,7 +61,7 @@ pipeline {
                                         "enableChart": true
                                       },
                                       "telegram": {
-                                        "token": "6527213503:AAElKOjpWVtwqExymf5sxMActQIW2VwZNEQ",
+                                        "token": "${TELEGRAM_BOT_TOKEN}",
                                         "chat": "-1001755259300",
                                         "replyTo": ""
                                       }
