@@ -49,26 +49,28 @@ pipeline {
                 }
             }
         }
-        stage('Prepare Post-Build') {
-            steps {
-                script {
-                    def jarFile = '../allure-notifications-4.3.0.jar'
-                    if (!fileExists(file: jarFile)) {
-                        sh 'wget https://github.com/qa-guru/allure-notifications/releases/download/4.3.0/allure-notifications-4.3.0.jar -P ..'
-                    }
-                }
-            }
-        }
     }
-
     post {
         always {
             allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
             withCredentials([string(credentialsId: '${TELEGRAM_TOKEN}', variable: 'TELEGRAM_TOKEN')]) {
                  sh "if [ ! -f '${allureFile}' ]; then wget -O '${allureFile}' '${allureNotificationsUrl} -P ..'; fi"
-                 sh "java" + "-Dtelegram.chat='-1001755259300' -Dtelegram.token='${TELEGRAM_TOKEN}' -Dtelegram.replyTo=''" +
-                                        "-Dbase.logo='' -Dbase.project.environment='${WEB_URL}' -Dbase.project.comment='${COMMENT}' -Dbase.project.reportLink='${BUILD_URL}' -Dbase.project.language='en' -Dbase.project.allureFolder='allure-report' -Dbase.project.enableChart=true"
-             }
+                 sh """
+                                         java -Dbase.logo="" \
+                                              -Dbase.project="${JOB_NAME}" \
+                                              -Dbase.environment="${WEB_URL}" \
+                                              -Dbase.comment="${COMMENT}" \
+                                              -Dbase.reportLink="${BUILD_URL}" \
+                                              -Dbase.language="en" \
+                                              -Dbase.allureFolder="allure-report" \
+                                              -Dbase.enableChart=true \
+                                              -Dtelegram.token="${TELEGRAM_TOKEN}" \
+                                              -Dtelegram.chat="-1001755259300" \
+                                              -Dtelegram.replyTo="" \
+                                              -DconfigFile=notifications/config.json \
+                                              -jar ../allure-notifications-4.3.0.jar
+                 """
+            }
         }
     }
 }
