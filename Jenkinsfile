@@ -29,10 +29,8 @@ pipeline {
         stage('Prepare Post-Build') {
             steps {
                 script {
-                    // Check if the allure-notifications-4.3.0.jar file exists
                     def jarFile = '../allure-notifications-4.3.0.jar'
                     if (!fileExists(file: jarFile)) {
-                        // Download the allure-notifications-4.3.0.jar file
                         sh 'wget https://github.com/qa-guru/allure-notifications/releases/download/4.3.0/allure-notifications-4.3.0.jar -P ..'
                     }
                 }
@@ -46,27 +44,25 @@ pipeline {
         }
         success {
             script {
-                // Create notifications/config.json file
-                writeFile file: 'notifications/config.json', text: '''
-                {
-                  "base": {
-                    "logo": "",
-                    "project": "${JOB_NAME}",
-                    "environment": "${WEB_URL}",
-                    "comment": "${COMMENT}",
-                    "reportLink": "${BUILD_URL}",
-                    "language": "en",
-                    "allureFolder": "allure-report",
-                    "enableChart": true
-                  },
-                  "telegram": {
-                    "token": "6527213503:AAElKOjpWVtwqExymf5sxMActQIW2VwZNEQ",
-                    "chat": "-1001755259300",
-                    "replyTo": ""
-                  }
-                }
-                '''
-                // Run post-build script
+                 writeFile file: 'notifications/config.json', text: """
+                                    {
+                                      "base": {
+                                        "logo": "",
+                                        "project": "${JOB_NAME}",
+                                        "environment": "${WEB_URL}",
+                                        "comment": "${COMMENT}",
+                                        "reportLink": "${BUILD_URL}",
+                                        "language": "en",
+                                        "allureFolder": "allure-report",
+                                        "enableChart": true
+                                      },
+                                      "telegram": {
+                                        "token": "6527213503:AAElKOjpWVtwqExymf5sxMActQIW2VwZNEQ",
+                                        "chat": "-1001755259300",
+                                        "replyTo": ""
+                                      }
+                                    }
+                                    """
                 sh 'java -DconfigFile=notifications/config.json -jar ../allure-notifications-4.3.0.jar'
             }
         }
