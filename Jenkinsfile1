@@ -55,13 +55,13 @@ pipeline {
             allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
             withCredentials([string(credentialsId: '${TELEGRAM_TOKEN}', variable: 'TELEGRAM_TOKEN')]) {
                  sh "if [ ! -f '${allureFile}' ]; then wget -O '${allureFile}' '${allureNotificationsUrl} -P ..'; fi"
-                 sh """
+                 sh '''
                                          java -Dbase.logo="" \
                                               -Dbase.project=${JOB_NAME} \
                                               -Dbase.environment=${WEB_URL} \
                                               -Dbase.comment=${COMMENT} \
                                               -Dbase.reportLink=${BUILD_URL} \
-                                              -Dbase.language="en" \
+                                              -Dbase.language='en' \
                                               -Dbase.allureFolder="allure-report" \
                                               -Dbase.enableChart=true \
                                               -Dtelegram.token=${TELEGRAM_TOKEN} \
@@ -69,7 +69,7 @@ pipeline {
                                               -Dtelegram.replyTo="" \
                                               -DconfigFile=notifications/config.json \
                                               -jar ../allure-notifications-4.3.0.jar
-                 """
+                 '''
             }
         }
     }
