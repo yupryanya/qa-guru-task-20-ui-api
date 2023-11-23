@@ -24,13 +24,7 @@ pipeline {
         stage('Test') {
             steps {
                 withAllureUpload(name: '${JOB_NAME} - #${BUILD_NUMBER}', projectId: '3838', results: [[path: 'build/allure-results']], serverId: 'allure-server', tags: 'nightly') {
-                    sh 'gradle clean ${TASK}
-                            -DisRemote=true
-                            -Dbrowser=${BROWSER}
-                            -DbrowserVersion=${BROWSER_VERSION}
-                            -DbrowserSize=${RESOLUTION}
-                            -DwebUrl=${WEB_URL}
-                            -DapiUrl=${API_URL}'
+                    sh 'gradle clean ${TASK} -DisRemote=true -Dbrowser=${BROWSER} -DbrowserVersion=${BROWSER_VERSION} -DbrowserSize=${RESOLUTION} -DwebUrl=${WEB_URL} -DapiUrl=${API_URL}'
                 }
             }
         }
