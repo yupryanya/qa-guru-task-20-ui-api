@@ -76,7 +76,7 @@ pipeline {
                                        -Dtelegram.chat="-1001755259300" \
                                        -Dtelegram.replyTo="" \
                                        -DconfigFile=notifications/config.json \
-                                       -jar '${allureFile}'
+                                       -jar ${allureFile}
                              '''
                     }
                 }
