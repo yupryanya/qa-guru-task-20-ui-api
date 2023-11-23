@@ -75,8 +75,7 @@ pipeline {
                                        -Dtelegram.token=${TELEGRAM_TOKEN} \
                                        -Dtelegram.chat="-1001755259300" \
                                        -Dtelegram.replyTo="" \
-                                       -DconfigFile=notifications/config.json \
-                                       -jar ${allureFile}
+                                       -jar ../allure-notifications-4.3.0.jar
                              '''
                     }
                 }
