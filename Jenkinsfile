@@ -8,9 +8,11 @@ pipeline {
     parameters {
         choice(name: 'TASK', choices: ['test', 'regression', 'smoke'], description: 'Select the task to run')
         choice(name: 'BROWSER', choices: ['chrome', 'firefox'], description: 'Select the browser for testing')
-        choice(name: 'API_URL', choices: ['https://demoqa.com'], description: 'Enter the API URL for testing')
-        choice(name: 'WEB_URL', choices: ['https://demoqa.com'], description: 'Enter the web URL for testing')
-        string(name: 'COMMENT', defaultValue: '', description: 'Enter a comment for the report')
+        choice(name: 'BROWSER_VERSION', choices: ['100', '99', '98'], description: 'Select the browser version')
+        choice(name: 'RESOLUTION', choices: ['1920x1080', '1280x720'], description: 'Select the screen resolution')
+        choice(name: 'API_URL', choices: ['https://demoqa.com'], description: 'Enter the API URL')
+        choice(name: 'WEB_URL', choices: ['https://demoqa.com'], description: 'Enter the web URL')
+        string(name: 'COMMENT', defaultValue: '', description: 'Enter a comment for the report (optional)')
     }
 
     stages {
@@ -22,7 +24,13 @@ pipeline {
         stage('Test') {
             steps {
                 withAllureUpload(name: '${JOB_NAME} - #${BUILD_NUMBER}', projectId: '3838', results: [[path: 'build/allure-results']], serverId: 'allure-server', tags: 'nightly') {
-                    sh 'gradle clean ${TASK} -DwebUrl=${WEB_URL} -DisRemote=true -DapiUrl=${API_URL} -Dbrowser=${BROWSER}'
+                    sh 'gradle clean ${TASK}
+                            -DisRemote=true
+                            -Dbrowser=${BROWSER}
+                            -DbrowserVersion=${BROWSER_VERSION}
+                            -DbrowserSize=${RESOLUTION}
+                            -DwebUrl=${WEB_URL}
+                            -DapiUrl=${API_URL}'
                 }
             }
         }
@@ -41,8 +49,6 @@ pipeline {
     post {
         always {
             allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
-        }
-        success {
             script {
                  writeFile file: 'notifications/config.json', text: """
                                     {
